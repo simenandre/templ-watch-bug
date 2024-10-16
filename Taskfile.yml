@@ -1,0 +1,53 @@
+version: 3
+
+tasks:
+  setup:
+    desc: Installs the tools needed to run the application
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@v0.2.77
+
+  generate:templ:
+    desc: Generate code
+    sources:
+      - ./**/*.templ
+    generates:
+      - ./**/*_templ.go
+    cmds:
+      - templ generate
+
+  generate:css:
+    aliases: [css]
+    vars:
+      OUTPUT_FILE: assets/public/main.dist.css
+    sources:
+      - "**/*.css"
+      - exclude: "{{.OUTPUT_FILE}}"
+    generates:
+      - assets/public/main.dist.css
+    cmds:
+      - npx lightningcss-cli@1.27.0 --minify --bundle --targets '>= 0.25%' ./assets/main.css -o {{.OUTPUT_FILE}}
+      - templ generate --notify-proxy > /dev/null 2>&1 || true
+
+  generate:
+    aliases: [gen]
+    deps: [generate:templ, generate:css]
+
+  dev:
+    desc: Run the application for development
+    cmds:
+      - templ generate --watch --proxy="http://localhost:8080" --open-browser=false --cmd="task run --watch --interval=100ms" -v
+
+  run:
+    desc: Run the application. Use `task dev` to run with live reload.
+    deps: [build, generate:css]
+    cmds:
+      - ./bin/server
+
+  build:
+    desc: Build the application
+    sources:
+      - '**/*.go'
+    generates:
+      - ./bin/server
+    cmds:
+      - go build -o ./bin/server main.go

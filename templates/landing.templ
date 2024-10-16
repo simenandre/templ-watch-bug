@@ -1,0 +1,20 @@
+package templates
+
+templ aComponent() {
+	<pre>
+		this is a pre tag from a component
+	</pre>
+}
+
+templ LandingPage() {
+	@layout() {
+		<main>
+			<h1>Hello world!</h1>
+			<p>templ is awesome, but it seems to have issues with template generation when using --watch</p>
+			<h2>You should see a component under</h2>
+			// Try to uncomment this after starting with --watch 
+			@aComponent()
+			<p>Hello again! We are done with the components</p>
+		</main>
+	}
+}

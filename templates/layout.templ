@@ -1,0 +1,17 @@
+package templates
+
+templ layout() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<title>templ is awesome!</title>
+			<meta name="robots" content="index,follow"/>
+			<link rel="stylesheet" href="/assets/main.dist.css"/>
+		</head>
+		<body>
+			@header()
+			{ children... }
+		</body>
+	</html>
+}
